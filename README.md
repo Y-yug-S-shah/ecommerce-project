@@ -8,15 +8,19 @@ ElectroShop is a full-featured e-commerce platform for electronics products buil
 - **Product Management**: Browse, search, filter, and sort products
 - **Shopping Cart**: Add, update, remove items, and checkout
 - **Order Management**: Place orders and track order history
+- **Payment Processing**: Secure payments via Stripe integration
+- **Stock Management**: Automatic stock reduction after successful purchases
 - **Admin Dashboard**: Manage products, view orders, and update order status
 - **Responsive Design**: Mobile-friendly interface
+- **Long-term Sessions**: User sessions persist for 30 days
 
 ## Tech Stack
 
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB with Mongoose ODM
 - **Frontend**: EJS templates, CSS, JavaScript
-- **Authentication**: bcryptjs, express-session
+- **Authentication**: bcryptjs, express-session with MongoDB store
+- **Payment**: Stripe API for secure payment processing
 - **File Upload**: Multer
 - **Other Tools**: dotenv, connect-flash, method-override
 
@@ -38,6 +42,8 @@ ElectroShop is a full-featured e-commerce platform for electronics products buil
    PORT=3000
    MONGODB_URI=mongodb://localhost:27017/electronics-ecommerce
    SESSION_SECRET=your_session_secret
+   STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+   STRIPE_SECRET_KEY=your_stripe_secret_key
    ```
 
 4. Start the application:
@@ -48,6 +54,11 @@ ElectroShop is a full-featured e-commerce platform for electronics products buil
 5. For development with auto-restart:
    ```
    npm run dev
+   ```
+
+6. Seed the database with sample products (optional):
+   ```
+   npm run seed
    ```
 
 ## Project Structure
@@ -61,6 +72,7 @@ ecommm/
 │   ├── js/
 │   └── uploads/      # Product images
 ├── routes/           # Express routes
+├── services/         # Service modules (payment, etc.)
 ├── views/            # EJS templates
 │   ├── admin/        # Admin pages
 │   ├── auth/         # Authentication pages
@@ -81,8 +93,9 @@ ecommm/
 - **Search**: Search for products by name, description, or brand
 - **Product Details**: View detailed information, specifications, and reviews
 - **Shopping Cart**: Add products to cart, update quantities, remove items
-- **Checkout**: Enter shipping details and payment information
+- **Checkout**: Enter shipping details and complete payment via Stripe
 - **Order History**: View past orders and their status
+- **Persistent Sessions**: Stay logged in for 30 days
 
 ### Admin Features
 
@@ -90,6 +103,21 @@ ecommm/
 - **Product Management**: Add, edit, and delete products
 - **Order Management**: View all orders and update their status
 - **Low Stock Alerts**: See products with low inventory
+
+## Payment Integration
+
+ElectroShop uses Stripe for secure payment processing:
+
+1. **Test Mode**: The integration is set up in test mode by default
+2. **Credit Card Processing**: Securely process credit card payments
+3. **Payment Verification**: Verify payment status before order confirmation
+4. **Stock Management**: Automatically reduce stock levels after successful payment
+
+To test payments, use Stripe's test card numbers:
+- Card number: 4242 4242 4242 4242
+- Expiration date: Any future date
+- CVC: Any 3 digits
+- ZIP: Any 5 digits
 
 ## Admin Access
 
@@ -125,3 +153,4 @@ This project is licensed under the MIT License.
 - [Express.js](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/)
 - [Node.js](https://nodejs.org/)
+- [Stripe](https://stripe.com/)
