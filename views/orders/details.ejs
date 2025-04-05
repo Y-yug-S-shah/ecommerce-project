@@ -1,0 +1,151 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Order #<%= order._id %></h4>
+        </div>
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h5 class="mb-3">Order Information</h5>
+              <p><strong>Date:</strong> <%= new Date(order.createdAt).toLocaleDateString() %></p>
+              <p><strong>Status:</strong> <span class="badge bg-<%= order.status === 'Delivered' ? 'success' : order.status === 'Processing' ? 'warning' : 'info' %>"><%= order.status %></span></p>
+              <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+              <p><strong>Payment Status:</strong> 
+                <% if (order.isPaid) { %>
+                  <span class="badge bg-success">Paid on <%= new Date(order.paidAt).toLocaleDateString() %></span>
+                <% } else { %>
+                  <span class="badge bg-danger">Not Paid</span>
+                <% } %>
+              </p>
+              <p><strong>Payment ID:</strong> <%= order.paymentResult ? order.paymentResult.id : 'N/A' %></p>
+              <p><strong>Total:</strong> ₹<%= order.totalPrice.toLocaleString() %></p>
+            </div>
+            <div class="col-md-6">
+              <h5 class="mb-3">Shipping Information</h5>
+              <p><strong>Name:</strong> <%= order.shippingAddress.fullName %></p>
+              <p><strong>Address:</strong> <%= order.shippingAddress.address %></p>
+              <p><strong>City:</strong> <%= order.shippingAddress.city %></p>
+              <p><strong>State:</strong> <%= order.shippingAddress.state %></p>
+              <p><strong>Postal Code:</strong> <%= order.shippingAddress.postalCode %></p>
+              <p><strong>Country:</strong> <%= order.shippingAddress.country %></p>
+              <p><strong>Delivery Status:</strong> 
+                <% if (order.isDelivered) { %>
+                  <span class="badge bg-success">Delivered on <%= new Date(order.deliveredAt).toLocaleDateString() %></span>
+                <% } else { %>
+                  <span class="badge bg-warning">Not Delivered</span>
+                <% } %>
+              </p>
+            </div>
+          </div>
+          
+          <h5 class="mb-3">Order Items</h5>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (const item of order.items) { %>
+                  <tr>
+                    <td style="width: 100px;">
+                      <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="img-fluid" style="max-width: 80px;">
+                    </td>
+                    <td><a href="/products/<%= item.product %>"><%= item.name %></a></td>
+                    <td>₹<%= item.price.toLocaleString() %></td>
+                    <td><%= item.quantity %></td>
+                    <td>₹<%= (item.price * item.quantity).toLocaleString() %></td>
+                  </tr>
+                <% } %>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                  <td>₹<%= order.totalPrice.toLocaleString() %></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <% if (order.isPaid && !order.isDelivered) { %>
+        <div class="alert alert-info">
+          <h5><i class="fas fa-shipping-fast me-2"></i> Your order is on the way!</h5>
+          <p class="mb-0">We've received your payment and are preparing your order for shipment. You'll receive a notification once it's shipped.</p>
+        </div>
+      <% } else if (order.isDelivered) { %>
+        <div class="alert alert-success">
+          <h5><i class="fas fa-check-circle me-2"></i> Your order has been delivered!</h5>
+          <p class="mb-0">Thank you for shopping with us. We hope you enjoy your purchase!</p>
+        </div>
+      <% } else { %>
+        <div class="alert alert-warning">
+          <h5><i class="fas fa-exclamation-triangle me-2"></i> Payment pending</h5>
+          <p class="mb-0">Your order will be processed once payment is confirmed.</p>
+        </div>
+      <% } %>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Order Summary</h4>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-3">
+            <h5>Items:</h5>
+            <h5>₹<%= order.totalPrice.toLocaleString() %></h5>
+          </div>
+          
+          <div class="d-flex justify-content-between mb-3">
+            <h5>Shipping:</h5>
+            <h5>Free</h5>
+          </div>
+          
+          <hr>
+          
+          <div class="d-flex justify-content-between mb-3">
+            <h4>Total:</h4>
+            <h4>₹<%= order.totalPrice.toLocaleString() %></h4>
+          </div>
+          
+          <% if (!order.isPaid && order.paymentMethod === 'Cash on Delivery') { %>
+            <div class="alert alert-info mt-3">
+              <p class="mb-0">You'll pay when your order is delivered.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Need Help?</h4>
+        </div>
+        <div class="card-body">
+          <p>If you have any questions or concerns about your order, please contact our customer support team.</p>
+          <a href="/contact" class="btn btn-outline-primary w-100">
+            <i class="fas fa-headset me-2"></i> Contact Support
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mt-4">
+    <a href="/orders" class="btn btn-secondary">
+      <i class="fas fa-arrow-left me-2"></i> Back to Order History
+    </a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

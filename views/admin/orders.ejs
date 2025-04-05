@@ -1,0 +1,130 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Admin Sidebar -->
+    <div class="col-md-3 col-lg-2 d-md-block admin-sidebar">
+      <div class="position-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/dashboard">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/products">
+              <i class="fas fa-box"></i> Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/admin/orders">
+              <i class="fas fa-shopping-cart"></i> Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="fas fa-home"></i> Back to Site
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Admin Content -->
+    <div class="col-md-9 col-lg-10 admin-content">
+      <h2 class="mb-4">Manage Orders</h2>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Total</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (orders && orders.length > 0) { %>
+                  <% orders.forEach(order => { %>
+                    <tr>
+                      <td>#<%= order._id.toString().slice(-6) %></td>
+                      <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                      <td><%= order.user %></td>
+                      <td>₹<%= order.totalPrice.toLocaleString() %></td>
+                      <td>
+                        <span class="badge bg-<%= order.isPaid ? 'success' : 'danger' %>">
+                          <%= order.isPaid ? 'Paid' : 'Not Paid' %>
+                        </span>
+                      </td>
+                      <td>
+                        <span class="badge bg-<%= 
+                          order.status === 'Processing' ? 'warning' : 
+                          order.status === 'Shipped' ? 'info' : 
+                          order.status === 'Delivered' ? 'success' : 
+                          'danger' 
+                        %>">
+                          <%= order.status %>
+                        </span>
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <a href="/orders/<%= order._id %>" class="btn btn-sm btn-info" target="_blank">
+                            <i class="fas fa-eye"></i>
+                          </a>
+                          <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= order._id %>">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                        </div>
+
+                        <!-- Update Status Modal -->
+                        <div class="modal fade" id="updateModal<%= order._id %>" tabindex="-1" aria-labelledby="updateModalLabel<%= order._id %>" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="updateModalLabel<%= order._id %>">Update Order Status</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <form action="/admin/orders/<%= order._id %>/status" method="POST" id="updateForm<%= order._id %>">
+                                  <div class="mb-3">
+                                    <label for="status<%= order._id %>" class="form-label">Status</label>
+                                    <select class="form-select" id="status<%= order._id %>" name="status">
+                                      <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Processing</option>
+                                      <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                      <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                      <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                    </select>
+                                  </div>
+                                </form>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" form="updateForm<%= order._id %>" class="btn btn-primary">Update</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="7" class="text-center">No orders found.</td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

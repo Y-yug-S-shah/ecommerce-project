@@ -1,0 +1,154 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Admin Sidebar -->
+    <div class="col-md-3 col-lg-2 d-md-block admin-sidebar">
+      <div class="position-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/dashboard">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/admin/products">
+              <i class="fas fa-box"></i> Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/orders">
+              <i class="fas fa-shopping-cart"></i> Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="fas fa-home"></i> Back to Site
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Admin Content -->
+    <div class="col-md-9 col-lg-10 admin-content">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Edit Product</h2>
+        <a href="/admin/products" class="btn btn-outline-primary">
+          <i class="fas fa-arrow-left"></i> Back to Products
+        </a>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <form action="/admin/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="name" class="form-label">Product Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="<%= product.name %>" required>
+              </div>
+              <div class="col-md-6">
+                <label for="brand" class="form-label">Brand</label>
+                <input type="text" class="form-control" id="brand" name="brand" value="<%= product.brand %>" required>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                  <option value="">Select Category</option>
+                  <option value="Smartphones" <%= product.category === 'Smartphones' ? 'selected' : '' %>>Smartphones</option>
+                  <option value="Laptops" <%= product.category === 'Laptops' ? 'selected' : '' %>>Laptops</option>
+                  <option value="Tablets" <%= product.category === 'Tablets' ? 'selected' : '' %>>Tablets</option>
+                  <option value="Cameras" <%= product.category === 'Cameras' ? 'selected' : '' %>>Cameras</option>
+                  <option value="Accessories" <%= product.category === 'Accessories' ? 'selected' : '' %>>Accessories</option>
+                  <option value="Audio" <%= product.category === 'Audio' ? 'selected' : '' %>>Audio</option>
+                  <option value="TVs" <%= product.category === 'TVs' ? 'selected' : '' %>>TVs</option>
+                  <option value="Wearables" <%= product.category === 'Wearables' ? 'selected' : '' %>>Wearables</option>
+                  <option value="Other" <%= product.category === 'Other' ? 'selected' : '' %>>Other</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="price" class="form-label">Price (₹)</label>
+                <input type="number" class="form-control" id="price" name="price" min="0" step="0.01" value="<%= product.price %>" required>
+              </div>
+              <div class="col-md-4">
+                <label for="stock" class="form-label">Stock</label>
+                <input type="number" class="form-control" id="stock" name="stock" min="0" value="<%= product.stock %>" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" name="description" rows="4" required><%= product.description %></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="features" class="form-label">Features (comma separated)</label>
+              <input type="text" class="form-control" id="features" name="features" value="<%= product.features ? product.features.join(', ') : '' %>" placeholder="e.g. 4GB RAM, 64GB Storage, 48MP Camera">
+            </div>
+
+            <div class="mb-3">
+              <label for="image" class="form-label">Product Image</label>
+              <div class="mb-2">
+                <img src="<%= product.imageUrl %>" alt="<%= product.name %>" width="100" class="img-thumbnail">
+              </div>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*">
+              <small class="text-muted">Leave empty to keep the current image</small>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Specifications</label>
+              <div id="specifications-container">
+                <% if (product.specifications && product.specifications.size > 0) { %>
+                  <% let index = 0; %>
+                  <% for (const [key, value] of product.specifications.entries()) { %>
+                    <div class="row spec-row mb-3">
+                      <div class="col-5">
+                        <input type="text" class="form-control" name="spec_key_<%= index %>" value="<%= key %>" placeholder="Specification name">
+                      </div>
+                      <div class="col-5">
+                        <input type="text" class="form-control" name="spec_value_<%= index %>" value="<%= value %>" placeholder="Specification value">
+                      </div>
+                      <div class="col-2">
+                        <button type="button" class="btn btn-danger remove-spec-btn">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <% index++; %>
+                  <% } %>
+                <% } else { %>
+                  <div class="row spec-row mb-3">
+                    <div class="col-5">
+                      <input type="text" class="form-control" name="spec_key_0" placeholder="Specification name">
+                    </div>
+                    <div class="col-5">
+                      <input type="text" class="form-control" name="spec_value_0" placeholder="Specification value">
+                    </div>
+                    <div class="col-2">
+                      <button type="button" class="btn btn-danger remove-spec-btn">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+              <button type="button" id="add-spec-btn" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-plus"></i> Add Specification
+              </button>
+            </div>
+
+            <div class="text-end">
+              <button type="reset" class="btn btn-outline-secondary me-2">Reset</button>
+              <button type="submit" class="btn btn-primary">Update Product</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

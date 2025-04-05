@@ -1,0 +1,87 @@
+<%- include('../partials/header') %>
+
+<div class="container py-4">
+  <h2 class="mb-4">Order History</h2>
+  
+  <% if (orders && orders.length > 0) { %>
+    <div class="row">
+      <% orders.forEach(order => { %>
+        <div class="col-lg-6 mb-4">
+          <div class="card order-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span class="order-number">Order #<%= order._id.toString().slice(-6) %></span>
+              <span class="order-date"><%= new Date(order.createdAt).toLocaleDateString() %></span>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-3">
+                <div>
+                  <p class="mb-1"><strong>Total:</strong> ₹<%= order.totalPrice.toLocaleString() %></p>
+                  <p class="mb-0"><strong>Items:</strong> <%= order.items.length %></p>
+                </div>
+                <div class="text-end">
+                  <p class="mb-1">
+                    <strong>Payment:</strong> 
+                    <span class="<%= order.isPaid ? 'text-success' : 'text-danger' %>">
+                      <%= order.isPaid ? 'Paid' : 'Not Paid' %>
+                    </span>
+                  </p>
+                  <p class="mb-0">
+                    <span class="order-status <%= 
+                      order.status === 'Processing' ? 'processing' : 
+                      order.status === 'Shipped' ? 'shipped' : 
+                      order.status === 'Delivered' ? 'delivered' : 
+                      'cancelled' 
+                    %>">
+                      <%= order.status %>
+                    </span>
+                  </p>
+                </div>
+              </div>
+              
+              <div class="order-items-preview">
+                <% let displayItems = order.items.slice(0, 2); %>
+                <% displayItems.forEach(item => { %>
+                  <div class="order-item">
+                    <img src="<%= item.imageUrl %>" class="order-item-img" alt="<%= item.name %>">
+                    <div class="order-item-details">
+                      <p class="order-item-title mb-1"><%= item.name %></p>
+                      <div class="d-flex justify-content-between">
+                        <p class="order-item-price mb-0">₹<%= item.price.toLocaleString() %></p>
+                        <p class="order-item-quantity mb-0">Qty: <%= item.quantity %></p>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
+                
+                <% if (order.items.length > 2) { %>
+                  <p class="text-muted text-center mt-2">
+                    + <%= order.items.length - 2 %> more item<%= order.items.length - 2 > 1 ? 's' : '' %>
+                  </p>
+                <% } %>
+              </div>
+              
+              <div class="text-center mt-3">
+                <a href="/orders/<%= order._id %>" class="btn btn-primary">
+                  View Order Details
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="card text-center py-5">
+      <div class="card-body">
+        <i class="fas fa-shopping-bag fa-4x mb-3 text-muted"></i>
+        <h3>No orders found</h3>
+        <p class="mb-4">You haven't placed any orders yet.</p>
+        <a href="/products" class="btn btn-primary">
+          <i class="fas fa-shopping-bag"></i> Start Shopping
+        </a>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

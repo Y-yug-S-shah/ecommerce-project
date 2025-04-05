@@ -1,0 +1,184 @@
+<%- include('./partials/header') %>
+
+<div class="hero">
+  <div class="container text-center">
+    <h1 class="display-4">Welcome to ElectroShop</h1>
+    <p class="lead">Your one-stop destination for all electronics needs</p>
+    <a href="/products" class="btn btn-primary btn-lg">Shop Now</a>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Featured Products Section -->
+  <section class="category-section">
+    <h2>Featured Products</h2>
+    <div class="row">
+      <% if (featuredProducts && featuredProducts.length > 0) { %>
+        <% featuredProducts.forEach(product => { %>
+          <div class="col-md-3 col-sm-6">
+            <div class="card product-card">
+              <img src="<%= product.imageUrl %>" class="card-img-top" alt="<%= product.name %>">
+              <div class="card-body">
+                <h5 class="card-title"><%= product.name %></h5>
+                <div class="product-rating">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <% if (i <= Math.round(product.rating)) { %>
+                      <i class="fas fa-star"></i>
+                    <% } else { %>
+                      <i class="far fa-star"></i>
+                    <% } %>
+                  <% } %>
+                  <span class="ms-1">(<%= product.reviews ? product.reviews.length : 0 %>)</span>
+                </div>
+                <div class="product-price">₹<%= product.price.toLocaleString() %></div>
+                <a href="/products/<%= product._id %>" class="btn btn-primary w-100">View Details</a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12 text-center">
+          <p>No featured products available at the moment.</p>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- Categories Showcase -->
+  <section class="category-section">
+    <h2>Shop by Category</h2>
+    <div class="row">
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/300x200?text=Smartphones" class="card-img-top" alt="Smartphones">
+          <div class="card-body text-center">
+            <h5 class="card-title">Smartphones</h5>
+            <a href="/products?category=Smartphones" class="btn btn-outline-primary">View All</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/300x200?text=Laptops" class="card-img-top" alt="Laptops">
+          <div class="card-body text-center">
+            <h5 class="card-title">Laptops</h5>
+            <a href="/products?category=Laptops" class="btn btn-outline-primary">View All</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/300x200?text=Tablets" class="card-img-top" alt="Tablets">
+          <div class="card-body text-center">
+            <h5 class="card-title">Tablets</h5>
+            <a href="/products?category=Tablets" class="btn btn-outline-primary">View All</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/300x200?text=Cameras" class="card-img-top" alt="Cameras">
+          <div class="card-body text-center">
+            <h5 class="card-title">Cameras</h5>
+            <a href="/products?category=Cameras" class="btn btn-outline-primary">View All</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Rated Products -->
+  <section class="category-section">
+    <h2>Top Rated Products</h2>
+    <div class="row">
+      <% if (topRatedProducts && topRatedProducts.length > 0) { %>
+        <% topRatedProducts.forEach(product => { %>
+          <div class="col-md-3 col-sm-6">
+            <div class="card product-card">
+              <img src="<%= product.imageUrl %>" class="card-img-top" alt="<%= product.name %>">
+              <div class="card-body">
+                <h5 class="card-title"><%= product.name %></h5>
+                <div class="product-rating">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <% if (i <= Math.round(product.rating)) { %>
+                      <i class="fas fa-star"></i>
+                    <% } else { %>
+                      <i class="far fa-star"></i>
+                    <% } %>
+                  <% } %>
+                  <span class="ms-1">(<%= product.reviews ? product.reviews.length : 0 %>)</span>
+                </div>
+                <div class="product-price">₹<%= product.price.toLocaleString() %></div>
+                <a href="/products/<%= product._id %>" class="btn btn-primary w-100">View Details</a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12 text-center">
+          <p>No top rated products available at the moment.</p>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- Products by Category -->
+  <% if (productsByCategory) { %>
+    <% Object.keys(productsByCategory).forEach(category => { %>
+      <% if (productsByCategory[category] && productsByCategory[category].length > 0) { %>
+        <section class="category-section">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><%= category %></h2>
+            <a href="/products?category=<%= category %>" class="btn btn-outline-primary">View All</a>
+          </div>
+          <div class="row">
+            <% productsByCategory[category].forEach(product => { %>
+              <div class="col-md-3 col-sm-6">
+                <div class="card product-card">
+                  <img src="<%= product.imageUrl %>" class="card-img-top" alt="<%= product.name %>">
+                  <div class="card-body">
+                    <h5 class="card-title"><%= product.name %></h5>
+                    <div class="product-rating">
+                      <% for (let i = 1; i <= 5; i++) { %>
+                        <% if (i <= Math.round(product.rating)) { %>
+                          <i class="fas fa-star"></i>
+                        <% } else { %>
+                          <i class="far fa-star"></i>
+                        <% } %>
+                      <% } %>
+                      <span class="ms-1">(<%= product.reviews ? product.reviews.length : 0 %>)</span>
+                    </div>
+                    <div class="product-price">₹<%= product.price.toLocaleString() %></div>
+                    <a href="/products/<%= product._id %>" class="btn btn-primary w-100">View Details</a>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </section>
+      <% } %>
+    <% }) %>
+  <% } %>
+
+  <!-- Newsletter Section -->
+  <section class="py-5 bg-light-gray my-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <h3>Subscribe to Our Newsletter</h3>
+          <p class="mb-4">Get the latest updates on new products and upcoming sales</p>
+          <form class="row g-3 justify-content-center">
+            <div class="col-md-8">
+              <input type="email" class="form-control" placeholder="Your email address">
+            </div>
+            <div class="col-md-auto">
+              <button type="submit" class="btn btn-primary">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<%- include('./partials/footer') %>
