@@ -10,7 +10,6 @@ ElectroShop is a full-featured e-commerce platform for electronics products buil
 - **Order Management**: Place orders and track order history
 - **Payment Processing**: Secure payments via Stripe integration
 - **Stock Management**: Automatic stock reduction after successful purchases
-- **Admin Dashboard**: Manage products, view orders, and update order status
 - **Responsive Design**: Mobile-friendly interface
 - **Long-term Sessions**: User sessions persist for 30 days
 
@@ -22,7 +21,6 @@ ElectroShop is a full-featured e-commerce platform for electronics products buil
 - **Authentication**: bcryptjs, express-session with MongoDB store
 - **Payment**: Stripe API for secure payment processing
 - **File Upload**: Multer
-- **Other Tools**: dotenv, connect-flash, method-override
 
 ## Installation
 
